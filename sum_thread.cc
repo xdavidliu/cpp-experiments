@@ -83,7 +83,7 @@ int main() {
     std::cout << "stride thread sum took " << d32 << " microsecs \n";
 
     float b_sum = thread_sum(vec, 12, batch_param);
-    std::cout << "batch sum was " << s_sum << '\n';
+    std::cout << "batch sum was " << b_sum << '\n';
     auto t4 = std::chrono::steady_clock::now();
     auto d43 = (t4 - t3) / std::chrono::microseconds(1);
     std::cout << "stride thread sum took " << d43 << " microsecs \n";
