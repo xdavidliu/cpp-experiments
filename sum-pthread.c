@@ -5,7 +5,7 @@
 #include <sys/param.h>  // MIN
 
 // usage
-// clang -pthread -Ofast sum-pthread.c && time ./a.out
+// clang -pthread -Ofast bar.c -o bar && time ./bar
 //
 // -pthread doesn't seem to matter.
 // -Ofast gives strange results:
@@ -15,6 +15,8 @@
 //   - if you select nthr=6 (from 6 performance cores on macbook)
 //     then Ofast gives more reasonable results.
 // -O1 has non-threaded slowest, and batched like 20% faster
+// - when you increase nthr you really see the difference between
+//   stride and batch since the former has cache misses.
 
 typedef struct timeval tv;
 
@@ -110,7 +112,6 @@ void measure_thread_sum(float *arr, long sz, int nthr, ParamFunc make, char *des
 
 int main() {
     long sz = 1L << 30;
-    int nthr = 6;
     tv t0 = now();
     float *arr = randarr(sz);
     tv t1 = now();
@@ -120,7 +121,13 @@ int main() {
     tv t2 = now();
     measure(t2, t1, "no thread");
     printf("no thread sum is %f\n\n", sum0);
-    measure_thread_sum(arr, sz, nthr, stride_make_param, "stride");
-    measure_thread_sum(arr, sz, nthr, batch_make_param, "batched");
+    measure_thread_sum(arr, sz, 1, stride_make_param, "stride");
+    measure_thread_sum(arr, sz, 1, batch_make_param, "batched");
+    measure_thread_sum(arr, sz, 6, stride_make_param, "stride");
+    measure_thread_sum(arr, sz, 6, batch_make_param, "batched");
+    measure_thread_sum(arr, sz, 8, stride_make_param, "stride");
+    measure_thread_sum(arr, sz, 8, batch_make_param, "batched");
+    measure_thread_sum(arr, sz, 24, stride_make_param, "stride");
+    measure_thread_sum(arr, sz, 24, batch_make_param, "batched");
     free(arr);
 }
