@@ -1,2 +1,2 @@
-# float-experiments
-floating point experiments using threads, cpu, gpu, etc.
+# cpp-experiments
+floating point experiments using threads, cpu, gpu, etc, threads, etc.
